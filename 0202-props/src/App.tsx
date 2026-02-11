@@ -14,12 +14,10 @@ function App() {
   const [data, setData] = React.useState({});
 
   function handleChange({ target }: React.ChangeEvent<HTMLInputElement>) {
-    if (target instanceof HTMLInputElement) {
-      setData({
-        ...data,
-        [target.name]: target.value,
-      });
-    }
+    setData({
+      ...data,
+      [target.name]: target.value,
+    });
   }
 
   return (
