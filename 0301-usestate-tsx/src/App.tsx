@@ -39,8 +39,7 @@ function App() {
           setData(await response.json());
         }
       } catch (e: unknown) {
-        if (e) console.error(e);
-        return null;
+        console.error(e);
       }
     };
 
