@@ -10,101 +10,60 @@ import React from "react";
 import videoSrc from "./video.mp4";
 import Button from "./Button";
 
-type Velocity = "1x" | "2x";
-
 function App() {
   const [playing, setPlaying] = React.useState(false);
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
-  const play = () => {
-    videoRef.current?.play();
-    setPlaying(true);
+  const forward = (time: number) => {
+    if (!videoRef.current) return;
+    videoRef.current.currentTime += time;
   };
 
-  const pause = () => {
-    videoRef.current?.pause();
-    setPlaying(false);
-  };
-
-  const advanceSeconds = (time: number) => {
-    const video = videoRef.current;
-
-    if (video instanceof HTMLVideoElement) {
-      if (video.currentTime + time > video.duration) {
-        video.currentTime = video.duration;
-      } else {
-        video.currentTime += time;
-      }
-    }
-  };
-
-  const advanceVelocity = (velocity: Velocity) => {
-    const video = videoRef.current;
-
-    if (video instanceof HTMLVideoElement) {
-      switch (velocity) {
-        case "1x":
-          video.playbackRate = 1.0;
-          break;
-        case "2x":
-          video.playbackRate = 2.0;
-          break;
-        default:
-          console.error("Velocidade de Reprodução inválida");
-      }
-    }
+  const changePlaybackRate = (speed: number) => {
+    if (!videoRef.current) return;
+    videoRef.current.playbackRate = speed;
   };
 
   const pictureInPicture = async () => {
-    const video = videoRef.current;
+    if (!videoRef.current) return;
 
-    if (video instanceof HTMLVideoElement) {
-      try {
-        if (video !== document.pictureInPictureElement) {
-          await video.requestPictureInPicture();
-        } else {
-          await document.exitPictureInPicture();
-        }
-      } catch (error) {
-        console.error("Picture-in-Picture error:", error);
+    try {
+      if (videoRef.current !== document.pictureInPictureElement) {
+        await videoRef.current.requestPictureInPicture();
+      } else {
+        await document.exitPictureInPicture();
       }
+    } catch (error) {
+      console.error("Picture-in-Picture error:", error);
     }
   };
 
   const mute = ({ target }: React.MouseEvent) => {
-    const video = videoRef.current;
-
-    if (video instanceof HTMLVideoElement && target instanceof HTMLElement) {
-      video.muted = !video.muted;
-      target.textContent = video.muted ? "UM" : "M";
-    }
-  };
-
-  const handleEnded = () => {
-    setPlaying(false);
+    if (!videoRef.current || !(target instanceof HTMLElement)) return;
+    videoRef.current.muted = !videoRef.current.muted;
+    target.textContent = videoRef.current.muted ? "UM" : "M";
   };
 
   return (
     <div>
       <div className="flex">
-        {!playing && (
-          <Button id="play" onClick={play}>
+        {playing ? (
+          <Button id="pause" onClick={() => videoRef.current?.pause()}>
+            Pause
+          </Button>
+        ) : (
+          <Button id="play" onClick={() => videoRef.current?.play()}>
             Play
           </Button>
         )}
-        {playing && (
-          <Button id="pause" onClick={pause}>
-            Pause
-          </Button>
-        )}
 
-        <Button id="advance" onClick={() => advanceSeconds(2)}>
+        <Button id="advance" onClick={() => forward(2)}>
           + 2s
         </Button>
-        <Button id="velocity1" onClick={() => advanceVelocity("1x")}>
+        <Button id="velocity1" onClick={() => changePlaybackRate(1)}>
           1x
         </Button>
-        <Button id="velocity2" onClick={() => advanceVelocity("2x")}>
+        <Button id="velocity2" onClick={() => changePlaybackRate(2)}>
           2x
         </Button>
         <Button id="pip" onClick={pictureInPicture}>
@@ -118,7 +77,9 @@ function App() {
         controls
         src={videoSrc}
         ref={videoRef}
-        onEnded={handleEnded}
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onEnded={() => setPlaying(false)}
       ></video>
     </div>
   );
