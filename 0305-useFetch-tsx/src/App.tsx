@@ -68,25 +68,6 @@ function App() {
       )}
     </section>
   );
-
-  // return (
-  //   <ul>
-  //     {data?.map((item) => (
-  //       <li key={item.id}>
-  //         <h2>{item.nome}</h2>
-  //         <p>
-  //           {item.preco.toLocaleString("pt-BR", {
-  //             style: "currency",
-  //             currency: "BRL",
-  //           })}
-  //         </p>
-  //         <p>Quantidade: {item.quantidade}</p>
-  //         <p>Descrição: {item.descricao}</p>
-  //         <p>Internacional: {item.internacional ? "Sim" : "Não"}</p>
-  //       </li>
-  //     ))}
-  //   </ul>
-  // );
 }
 
 export default App;
