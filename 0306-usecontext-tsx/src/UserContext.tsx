@@ -1,28 +1,25 @@
 import React from "react";
 import useFetch from "./useFetch";
 
-declare global {
-  interface UserPreferencies {
+interface User {
+  id: number;
+  nome: string;
+  idade: number;
+  aulas: number;
+  cursos: number;
+  preferencias: {
     playback: number;
     volume: number;
     qualidade: string;
-  }
-
-  interface User {
-    id: number;
-    nome: string;
-    idade: number;
-    aulas: number;
-    cursos: number;
-    preferencias: UserPreferencies;
-  }
-
-  interface IUserContext {
-    data: User | null;
-    loading: boolean;
-    error: string | null;
-  }
+  };
 }
+
+interface IUserContext {
+  data: User | null;
+  loading: boolean;
+  error: string | null;
+}
+
 const UserContext = React.createContext<IUserContext | null>(null);
 
 export const useContextApi = () => {

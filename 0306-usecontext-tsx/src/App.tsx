@@ -8,7 +8,7 @@
 import React from "react";
 import Header from "./Header";
 import Content from "./Content";
-import { useContextApi, UserProvider } from "./UserContext";
+import { UserProvider } from "./UserContext";
 
 function App() {
   return (
